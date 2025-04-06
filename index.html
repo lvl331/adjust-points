@@ -121,19 +121,21 @@
       <input type="number" id="max-level" value="25">
       <label>ライボ上限:</label>
       <input type="number" id="max-live-bonus" value="10">
+      <label>大根:</label>
+      <input type="number" id="score-margin-multiplier" value="0.95">
     </fieldset>
 
     <button onclick="main()">計算する</button>
 
     <h3>計算結果</h3>
     <div id="results">
-      <div id="live-bonus-used">ライボ消費数</div>
-      <div id="result-event-bonus">イベントボーナス</div>
-      <div id="song">楽曲</div>
-      <div id="required-score">スコア</div>
-      <div id="achieved-event-points">獲得イベントP</div>
-      <div id="total-event-points">獲得後の累計イベントP</div>
-      <div id="remaining-event-points">目標までのイベントP</div>
+      <!-- 結果だけが上書きされるエリア -->
+      <div id="results-content"></div>
+      
+      <!-- このボタンは常にここにいて、見えたり消えたりするだけ -->
+      <button id="apply-result-button" style="display:none;" onclick="applyResult()">
+        反映する
+      </button>
     </div>
   </div>
 
