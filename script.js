@@ -118,7 +118,7 @@ async function main() {
       encoreSkillNumber
     });
     // validHitorinboEnvyData
-    if (validHitorinboEnvyData.length === 0){
+    if (validHitorinboEnvyData.length){
       const maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 7);
 
       const minAllowedEventBonus = calculateMinAllowedEventBonus({
