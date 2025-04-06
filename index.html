@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>イベントPシミュレーター</title>
   <style>
     body {
@@ -148,6 +149,77 @@
       width: 120px; /* ← ボタンのサイズを小さく */
       padding: 10px 0;
       font-size: 14px;
+    }
+    @media screen and (max-width: 600px) {
+      body {
+        font-size: 12px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      legend {
+        font-size: 16px;
+      }
+
+      label {
+        font-size: 12px;
+      }
+
+      input[type="number"],
+      select {
+        font-size: 15px;
+        padding: 6px 10px;
+        height: 38px;
+        width: 92.5%;
+      }
+
+      button {
+        font-size: 13px;
+        padding: 8px 0;
+        height: 42px;
+      }
+
+      .calculate-button-area button {
+        font-size: 13px;
+        width: 30%;
+        margin-top: -10px;
+        margin-bottom: -1px;
+      }
+
+      .apply-button-area button {
+        font-size: 13px;
+        width: 35.5%;
+        margin-top: -5px;
+      }
+
+      #results div {
+        font-size: 13.5px;
+      }
+
+      .container {
+        padding: 18px 12px;
+      }
+
+      fieldset {
+        padding: 12px 10px;
+      }
+
+      .row-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #apply-result-button {
+        transform: none;
+        margin-top: 10px;
+        transform: translateY(-25px) translateX(48px);
+      }
+    }
+
+    .input-block {
+      width: 108%;
     }
 
   </style>
