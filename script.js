@@ -708,6 +708,6 @@ function applyResult() {
   const currentInput = document.getElementById("current-event-points");
   currentInput.value = Number(currentInput.value) + earnedPoints;
 
-  // オマケ：再計算ボタンを自動で押すなら
+  // 自動で再計算
   main();
 }
