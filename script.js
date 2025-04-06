@@ -58,8 +58,10 @@ async function main() {
 
   // 調整不可能な条件をチェックして、早期終了
   if (remainingEventPoints === 0) {
-    document.getElementById("results-content").innerHTML =
-    "現在のイベントPと目標のイベントPが一致しています！";
+    document.getElementById("results-content").innerHTML = `
+    <strong>現在のイベントPと目標のイベントPが一致しています！</strong>
+    `
+    document.getElementById("apply-result-button").style.display = "none";
     return;
   } else if (remainingEventPoints < 100) {
     document.getElementById("results-content").innerHTML = `
@@ -73,6 +75,7 @@ async function main() {
         目標のイベントPを変更してください💦
       </div>
     `;
+    document.getElementById("apply-result-button").style.display = "none";
     return;
   } else if (remainingEventPoints <= 100 + teamData.eventBonus) {
     const maxBonus = Math.floor(remainingEventPoints - 100);
@@ -89,6 +92,7 @@ async function main() {
         イベントボーナスを <strong>${maxBonus}%</strong>${limitNote} にしてください💦
       </div>
     `;
+    document.getElementById("apply-result-button").style.display = "none";
     return;
   }
 
@@ -142,6 +146,8 @@ async function main() {
           編成を変更して再度お試しください💦
         </div>
       `;
+      document.getElementById("apply-result-button").style.display = "none";
+      return;
     } else if (remainingEventPoints < 800){
       const maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 7);
       const minAllowedEventBonus = calculateMinAllowedEventBonus({
@@ -166,6 +172,8 @@ async function main() {
           編成を変更して再度お試しください💦
         </div>
       `;
+      document.getElementById("apply-result-button").style.display = "none";
+      return;
     } else {
       const validHitorinboEnvyData = findValidFallbackSongData({
         title: "独りんぼエンヴィー",
@@ -204,19 +212,16 @@ function displayMatchResult({
 }) {
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>調整可能な楽曲が見つかりました！</strong><br><br>
-    🎵 楽曲 ： ${song.title}<br>
-    🔢 スコア ： ${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
-    💥 ライボ消費数 ： ${song.requiredLiveBonusUsed}<br>
-    🎁 獲得イベントP ： ${earnedPoints.toLocaleString()} P<br>
-    📈 獲得後の累計イベントP ： ${totalPoints.toLocaleString()} P<br>
-    🎯 目標までのイベントP ： ${remainingPoints.toLocaleString()} P<br>
-    💡 イベントボーナス ： ${eventBonus} %
+    🎵 楽曲: ${song.title}<br>
+    🔢 スコア: ${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
+    💥 ライボ消費数: ${song.requiredLiveBonusUsed}<br>
+    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br>
+    📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
+    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P<br>
+    💡 イベントボーナス: ${eventBonus} %
   `;
   // ボタンを表示
-  const applyButton = document.getElementById("apply-result-button");
-  if (applyButton) {
-    applyButton.style.display = "inline-block";
-  }
+  document.getElementById("apply-result-button").style.display = "inline-block";
 }
 
 function displayHitorinboEnvyResult({
@@ -231,19 +236,16 @@ function displayHitorinboEnvyResult({
 
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>独りんぼエンヴィーで目標のイベントPまで近づけましょう！</strong><br><br>
-    🎵 楽曲：${data.title}<br>
-    💥 ライボ消費数：${data.requiredLiveBonusUsed}<br>
-    🔢 スコア：${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
-    🎁 獲得イベントP：${earnedPoints.toLocaleString()} P<br>
-    📈 獲得後の累計イベントP：${totalPoints.toLocaleString()} P<br>
-    🎯 目標までのイベントP：${remainingPoints.toLocaleString()} P<br>
-    💡 イベントボーナス：${eventBonus} %
+    🎵 楽曲: ${data.title}<br>
+    💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
+    🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
+    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br>
+    📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
+    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P<br>
+    💡 イベントボーナス: ${eventBonus} %
   `;
   // ボタンを表示
-  const applyButton = document.getElementById("apply-result-button");
-  if (applyButton) {
-    applyButton.style.display = "inline-block";
-  }
+  document.getElementById("apply-result-button").style.display = "inline-block";
 }
 
 function findValidFallbackSongData({

@@ -5,103 +5,151 @@
   <title>イベントPシミュレーター</title>
   <style>
     body {
-      font-family: "Helvetica Neue", sans-serif;
-      background: #ffffff;
-      color: #333;
-      margin: 0;
-      padding: 40px;
-    }
-
-    h2, h3 {
+      font-family: "Helvetica Neue", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
       color: #2c3e50;
+      margin: 0;
+      padding: 60px 20px;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 780px;
       margin: auto;
       background: #ffffff;
-      padding: 30px 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 40px 50px;
+      border-radius: 20px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #34495e;
+      font-size: 28px;
+      margin-bottom: 30px;
     }
 
     fieldset {
-      border: none;
-      margin-bottom: 25px;
+      border: 1px solid #d0d9e6; /* ← 薄いグレーの枠線を追加 */
+      border-radius: 12px;        /* 角を少し丸めて柔らかく */
+      margin-bottom: 35px;
+      padding: 20px 20px 20px;    /* 内側の余白を少し追加 */
     }
+
 
     legend {
       font-weight: bold;
-      margin-bottom: 10px;
+      font-size: 20px;
+      margin-bottom: -15px; /* ← ここを小さめに */
+      color: #2980b9;
     }
 
     label {
       display: block;
-      margin-top: 10px;
+      margin-top: 5px; /* ← 少し詰める */
+      font-size: 15px;
       font-weight: 500;
     }
 
     input[type="number"],
     select {
-      width: 100%;
-      padding: 8px 12px;
-      margin-top: 4px;
+      width: 95%;
+      padding: 10px 14px;
+      margin-top: 6px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      transition: box-shadow 0.2s ease;
+      border-radius: 10px;
+      background: #f9f9f9;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-size: 14px;
     }
 
     input[type="number"]:focus,
     select:focus {
-      box-shadow: 0 0 5px #3498db;
       border-color: #3498db;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
       outline: none;
+      background: #ffffff;
     }
 
     button {
-      padding: 12px 20px;
+      height: 50px;
+      display: inline-block;
+      padding: 14px 0;
       background-color: #3498db;
-      border: none;
-      color: #fff;
+      color: #ffffff;
       font-size: 16px;
-      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
       cursor: pointer;
-      margin-top: 15px;
       transition: background 0.3s ease;
+      margin-top: 0px;
+      margin-bottom: 20px;
     }
 
     button:hover {
       background-color: #2980b9;
     }
 
-    #results {
-      margin-top: 25px;
-      padding: 20px;
-      background: #ecf0f1;
-      border-radius: 8px;
-    }
-
-    #results div {
-      margin: 6px 0;
-      font-size: 15px;
-    }
-
     .row-group {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
+      margin-top: 0px;
     }
 
     .input-block {
-      display: flex;
-      flex-direction: column;
       flex: 1;
-      min-width: 120px;
+      min-width: 160px;
     }
-    legend {
-      margin-left: -10px; /* 左に10px移動 */
-      font-size: 1.3em;   /* 文字サイズを1.2倍に拡大 */
+
+    #results {
+      margin-top: 10px;
+      padding: 25px;
+      background: #f1f8ff;
+      border-radius: 14px;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
     }
+
+    #results div {
+      margin: 0 0;
+      font-size: 16px;
+    }
+
+    #apply-result-button {
+      margin-top: 20px;
+      display: none;
+      background-color: #2ecc71;
+      transform: translateY(-160px);
+    }
+
+    #apply-result-button:hover {
+      background-color: #27ae60;
+    }
+
+    .calculate-button-area {
+      text-align: right; /* ← 右寄せ */
+      margin-top: -5px;
+      margin-bottom: 30px; /* ← 下の余白（必要に応じて調整） */
+    }
+
+    .calculate-button-area button {
+      width: 120px; /* ← ボタンのサイズを小さく */
+      padding: 10px 0;
+      font-size: 14px;
+    }
+
+    .apply-button-area {
+      text-align: right; /* ← 右寄せ */
+      margin-bottom: 40px; /* ← 下の余白（必要に応じて調整） */
+      margin-right: 48px;
+    }
+
+    .apply-button-area button {
+      width: 120px; /* ← ボタンのサイズを小さく */
+      padding: 10px 0;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
@@ -160,7 +208,7 @@
             <option value="37">37</option>
           </select>
         </div>
-    
+
         <div class="input-block">
           <label for="max-live-bonus">ライボ上限</label>
           <select id="max-live-bonus">
@@ -177,7 +225,7 @@
             <option value="10" selected>10</option>
           </select>
         </div>
-    
+
         <div class="input-block">
           <label for="score-margin-multiplier">大根</label>
           <select id="score-margin-multiplier">
@@ -207,16 +255,17 @@
         </div>
       </div>
     </fieldset>
-    
-
-    <button onclick="main()">計算する</button>
-
-    <h3>計算結果</h3>
-    <div id="results">
-      <div id="results-content"></div>
-      <button id="apply-result-button" style="display:none;" onclick="applyResult()">
-        反映する
-      </button>
+    <div class="calculate-button-area">
+      <button onclick="main()">計算する</button>
+    </div>
+    <fieldset>
+      <legend>計算結果</legend>
+      <div id="results">
+        <div id="results-content"></div>
+      </div>
+    </fieldset>
+    <div class="apply-button-area">
+      <button id="apply-result-button" onclick="applyResult()">反映する</button>
     </div>
   </div>
 
