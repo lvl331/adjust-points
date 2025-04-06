@@ -3,6 +3,7 @@ async function main() {
   const soloLiveData = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/solo_live_data.csv');
   const multiLiveData1 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_1.csv');
   const multiLiveData2 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_2.csv');
+  /*
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
 
@@ -20,6 +21,29 @@ async function main() {
 
   const maxLevel = getNumberById('max-level');
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
+  // スコアのマージン係数
+  const scoreMarginMultiplier = getNumberById('score-margin-multiplier');
+  */
+
+  const targetEventPoints = 99;
+  const currentEventPoints = 0;
+
+  const teamData = {
+    skills: [
+      150,
+      140,
+      130,
+      120,
+      100
+    ],
+    talent: 380000,
+    eventBonus: 350
+  };
+
+  const maxLevel = 25;
+  const maxLiveBonusUsed = 10;
+  // スコアのマージン係数
+  const scoreMarginMultiplier = 0.95;
 
   // ひとりでライブ固定
   const liveMode = 'soloLive';
@@ -29,29 +53,38 @@ async function main() {
   const eventType = 'marathon';
   // 残りのイベントP
   const remainingEventPoints = targetEventPoints - currentEventPoints;
-  // スコアのマージン係数
-  const scoreMarginMultiplier = getNumberById('score-margin-multiplier');;
   // 赤エビで近づける時のバッファー
   const bufferPoints = 100 + teamData.eventBonus * 1.5
 
   // 調整不可能な条件をチェックして、早期終了
   if (remainingEventPoints === 0) {
     document.getElementById("results").innerHTML =
-    "現在のイベントPと目標のイベントPが一致しています。";
+    "現在のイベントPと目標のイベントPが一致しています！";
     return;
   } else if (remainingEventPoints < 100) {
-    document.getElementById("results").innerHTML =`
-  <div style="color: red; font-weight: bold;">
-    現在のイベントPから目標のイベントPまで100P未満の為、調整不可です。<br>
-    目標のイベントPを変更してください。
-  </div>
-  `;
-  } else if (remainingEventPoints < 100 + teamData.eventBonus) {
+    document.getElementById("results").innerHTML = `
+      <div style="
+        color: #e67e22;  /* 明るめのオレンジ */
+        font-weight: bold;
+        font-size: 16px;
+        padding: 12px;
+      ">
+        現在のイベントPから目標のイベントPまで100P未満のため、調整できません😭<br>
+        目標のイベントPを変更してください💦
+      </div>
+    `;
+    return;
+  } else if (remainingEventPoints <= 100 + teamData.eventBonus) {
     const maxBonus = Math.floor(remainingEventPoints - 100);
     document.getElementById("results").innerHTML = `
-      <div style="color: red; font-weight: bold;">
-        現在の条件では調整不可です。<br>
-        イベントボーナスを <strong>${maxBonus}%</strong> 以下にしてください。
+      <div style="
+        color: #e67e22;  /* 明るめのオレンジ */
+        font-weight: bold;
+        font-size: 16px;
+        padding: 12px;
+      ">
+        現在の条件では調整できません😭<br>
+        イベントボーナスを<strong>${maxBonus}%</strong>${remainingEventPoints >= 100 + teamData.eventBonus ? "" : "以下"}にしてください💦
       </div>
     `;
     return;
@@ -92,50 +125,23 @@ async function main() {
       isValidSongConstFound = true;
     } 
   }
+
   if (isValidSongConstFound === false) {
     if (remainingEventPoints < 200) {
       document.getElementById("results").innerHTML = `
-        <div style="color: red; font-weight: bold;">
-          ポイント調整可能な楽曲が存在しません。<br>
-          イベントボーナスが <strong>0% ～ ${(remainingEventPoints - 100)}%</strong> の範囲になるように<br>
-          編成を変更して再度お試しください。
+        <div style="
+          color: #e67e22;  /* 明るめのオレンジ */
+          font-weight: bold;
+          font-size: 16px;
+          padding: 12px;
+        ">
+          ポイント調整可能な楽曲が存在しません😭<br>
+          イベントボーナスが<strong>0% ～ ${(remainingEventPoints - 100)}%</strong>の間になるように<br>
+          編成を変更して再度お試しください💦
         </div>
       `;
-    } else if (remainingEventPoints < 600){
-      document.getElementById("results").innerHTML = `
-        <div style="color: red; font-weight: bold;">
-          ポイント調整可能な楽曲が存在しません。<br>
-          イベントボーナスが <strong>${minAllowedEventBonus}% ～ ${maxAllowedEventBonus}%</strong> の範囲になるように<br>
-          編成を変更して再度お試しください。
-        </div>
-      `;
-    }
-    const validHitorinboEnvyData = findValidFallbackSongData({
-      title: "独りんぼエンヴィー",
-      difficultyName: "expert",
-      teamData,
-      musicInfo,
-      liveData,
-      scoreMarginMultiplier,
-      remainingEventPoints,
-      eventBonus: teamData.eventBonus,
-      bufferPoints,
-      liveMode,
-      maxLiveBonusUsed,
-      eventType,
-      encoreSkillNumber
-    });
-    if (validHitorinboEnvyData){
-      displayHitorinboEnvyResult({
-        data: validHitorinboEnvyData,
-        currentPoints: currentEventPoints,
-        targetPoints: targetEventPoints,
-        eventBonus: teamData.eventBonus
-      }
-      );
-    } else {
+    } else if (remainingEventPoints < 800){
       const maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 7);
-
       const minAllowedEventBonus = calculateMinAllowedEventBonus({
         remainingEventPoints,
         teamData,
@@ -146,9 +152,42 @@ async function main() {
         eventType,
         encoreSkillNumber
       });
-
-      if (minAllowedEventBonus === -1) {
-        throw new Error("ポイント調整可能なイベントボーナスの最小値が見つかりませんでした。")
+      document.getElementById("results").innerHTML = `
+        <div style="
+          color: #e67e22;  /* 明るめのオレンジ */
+          font-weight: bold;
+          font-size: 16px;
+          padding: 12px;
+        ">
+          ポイント調整可能な楽曲が存在しません😭<br>
+          イベントボーナスが <strong>${minAllowedEventBonus}% ～ ${maxAllowedEventBonus}%</strong> の範囲になるように<br>
+          編成を変更して再度お試しください💦
+        </div>
+      `;
+    } else {
+      const validHitorinboEnvyData = findValidFallbackSongData({
+        title: "独りんぼエンヴィー",
+        difficultyName: "expert",
+        teamData,
+        musicInfo,
+        liveData,
+        scoreMarginMultiplier,
+        remainingEventPoints,
+        eventBonus: teamData.eventBonus,
+        bufferPoints,
+        liveMode,
+        maxLiveBonusUsed,
+        eventType,
+        encoreSkillNumber
+      });
+      if (validHitorinboEnvyData){
+        displayHitorinboEnvyResult({
+          data: validHitorinboEnvyData,
+          currentPoints: currentEventPoints,
+          targetPoints: targetEventPoints,
+          eventBonus: teamData.eventBonus
+        }
+        );
       }
     }
   }
@@ -189,7 +228,7 @@ function displayHitorinboEnvyResult({
   const remainingPoints = targetPoints - totalPoints;
 
   document.getElementById("results-content").innerHTML = `
-    ✅ <strong>独りんぼエンヴィーでポイント調整可能です！</strong><br><br>
+    ✅ <strong>独りんぼエンヴィーで目標のイベントPまで近づけましょう！</strong><br><br>
     🎵 楽曲: ${data.title}<br>
     💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
     🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
@@ -298,11 +337,9 @@ function calculateMinAllowedEventBonus({
       break;
     }
   }
-
   if (minAllowedEventBonus === -1) {
     throw new Error("ポイント調整可能なイベントボーナスの最小値が見つかりませんでした。");
   }
-
   return minAllowedEventBonus;
 }
 
