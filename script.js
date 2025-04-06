@@ -51,7 +51,7 @@ async function main() {
   const remainingEventPoints = targetEventPoints - currentEventPoints;
   // スコアのマージン係数
   const scoreMarginMultiplier = 0.95;
-  // ポイント調整時のマージン
+  // 赤エビで近づける時のマージン
   const bufferPoints = 100 + teamData.eventBonus * 1.5
 
   // 調整不可能な条件をチェックして、早期終了
@@ -117,8 +117,15 @@ async function main() {
       eventType,
       encoreSkillNumber
     });
-    // validHitorinboEnvyData
-    if (validHitorinboEnvyData.length){
+    if (validHitorinboEnvyData){
+      displayHitorinboEnvyResult({
+        data: validHitorinboEnvyData,
+        currentPoints: currentEventPoints,
+        targetPoints: targetEventPoints,
+        eventBonus: teamData.eventBonus
+      }
+      );
+    } else {
       const maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 7);
 
       const minAllowedEventBonus = calculateMinAllowedEventBonus({
@@ -153,15 +160,6 @@ async function main() {
           </div>
         `;
       }
-
-    } else {
-      displayHitorinboEnvyResult({
-        data: validHitorinboEnvyData,
-        currentPoints: currentEventPoints,
-        targetPoints: targetEventPoints,
-        eventBonus: teamData.eventBonus
-      }
-      );
     }
   }
 }
