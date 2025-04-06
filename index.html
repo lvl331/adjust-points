@@ -216,11 +216,21 @@
         margin-top: 10px;
         transform: translateY(-25px) translateX(48px);
       }
-    }
 
-    .input-block {
-      width: 108%;
-    }
+      .input-block {
+        width: 108%;
+      }
+      
+      #results {
+        width: 100%;      /* コンテナ幅いっぱいに広げる */
+        box-sizing: border-box; /* padding・borderを含めて制御 */
+      }
+      
+      fieldset {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
 
   </style>
 </head>
