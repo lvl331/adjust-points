@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: "Helvetica Neue", sans-serif;
-      background: #f5f7fa;
+      background: #ffffff;
       color: #333;
       margin: 0;
       padding: 40px;
@@ -99,30 +99,89 @@
 
     <fieldset>
       <legend>編成</legend>
-      <label>リーダースキル:</label>
+      <label>リーダースキル（％）:</label>
       <input type="number" id="skill-1" value="150">
-      <label>2枠スキル:</label>
+      <label>2枠スキル（％）:</label>
       <input type="number" id="skill-2" value="140">
-      <label>3枠スキル:</label>
+      <label>3枠スキル（％）:</label>
       <input type="number" id="skill-3" value="130">
-      <label>4枠スキル:</label>
+      <label>4枠スキル（％）:</label>
       <input type="number" id="skill-4" value="120">
-      <label>5枠スキル:</label>
+      <label>5枠スキル（％）:</label>
       <input type="number" id="skill-5" value="100">
       <label>総合力:</label>
       <input type="number" id="talent" value="380000">
-      <label>イベントボーナス:</label>
+      <label>イベントボーナス（％）:</label>
       <input type="number" id="event-bonus" value="350">
     </fieldset>
 
     <fieldset>
       <legend>その他</legend>
       <label>レベル上限:</label>
-      <input type="number" id="max-level" value="25" min="15" step="1">
+      <select id="max-level">
+        <!-- 20 〜 37 -->
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25" selected>25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30</option>
+        <option value="31">31</option>
+        <option value="32">32</option>
+        <option value="33">33</option>
+        <option value="34">34</option>
+        <option value="35">35</option>
+        <option value="36">36</option>
+        <option value="37">37</option>
+      </select>
+      
       <label>ライボ上限:</label>
-      <input type="number" id="max-live-bonus" value="10" min="0" max="10" step="1">
+      <select id="max-live-bonus">
+        <!-- 0 〜 10 -->
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10" selected>10</option>
+      </select>
+      
       <label>大根:</label>
-      <input type="number" id="score-margin-multiplier" value="0.95" min="0.5" max="1" step="0.01">
+      <select id="score-margin-multiplier">
+        <!-- 0.80 〜 1.00 step 0.01 -->
+        <!-- JavaScript can generate this too -->
+        <option value="0.80">0.80</option>
+        <option value="0.81">0.81</option>
+        <option value="0.82">0.82</option>
+        <option value="0.83">0.83</option>
+        <option value="0.84">0.84</option>
+        <option value="0.85">0.85</option>
+        <option value="0.86">0.86</option>
+        <option value="0.87">0.87</option>
+        <option value="0.88">0.88</option>
+        <option value="0.89">0.89</option>
+        <option value="0.90">0.90</option>
+        <option value="0.91">0.91</option>
+        <option value="0.92">0.92</option>
+        <option value="0.93">0.93</option>
+        <option value="0.94">0.94</option>
+        <option value="0.95" selected>0.95</option>
+        <option value="0.96">0.96</option>
+        <option value="0.97">0.97</option>
+        <option value="0.98">0.98</option>
+        <option value="0.99">0.99</option>
+        <option value="1.00">1.00</option>
+      </select>
     </fieldset>
 
     <button onclick="main()">計算する</button>

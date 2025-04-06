@@ -3,7 +3,7 @@ async function main() {
   const soloLiveData = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/solo_live_data.csv');
   const multiLiveData1 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_1.csv');
   const multiLiveData2 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_2.csv');
-  /*
+
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
 
@@ -23,9 +23,9 @@ async function main() {
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
   // スコアのマージン係数
   const scoreMarginMultiplier = getNumberById('score-margin-multiplier');
-  */
 
-  const targetEventPoints = 99;
+  /*
+  const targetEventPoints = 88;
   const currentEventPoints = 0;
 
   const teamData = {
@@ -44,7 +44,7 @@ async function main() {
   const maxLiveBonusUsed = 10;
   // スコアのマージン係数
   const scoreMarginMultiplier = 0.95;
-
+  */
   // ひとりでライブ固定
   const liveMode = 'soloLive';
   const liveData = soloLiveData;
@@ -76,15 +76,17 @@ async function main() {
     return;
   } else if (remainingEventPoints <= 100 + teamData.eventBonus) {
     const maxBonus = Math.floor(remainingEventPoints - 100);
+    const limitNote = remainingEventPoints === 100 ? "" : "以下";
+
     document.getElementById("results").innerHTML = `
       <div style="
-        color: #e67e22;  /* 明るめのオレンジ */
+        color: #e67e22;
         font-weight: bold;
         font-size: 16px;
         padding: 12px;
       ">
         現在の条件では調整できません😭<br>
-        イベントボーナスを<strong>${maxBonus}%</strong>${remainingEventPoints >= 100 + teamData.eventBonus ? "" : "以下"}にしてください💦
+        イベントボーナスを <strong>${maxBonus}%</strong>${limitNote} にしてください💦
       </div>
     `;
     return;
@@ -136,7 +138,7 @@ async function main() {
           padding: 12px;
         ">
           ポイント調整可能な楽曲が存在しません😭<br>
-          イベントボーナスが<strong>0% ～ ${(remainingEventPoints - 100)}%</strong>の間になるように<br>
+          イベントボーナスが <strong>0% ～ ${(remainingEventPoints - 100)}%</strong> の間になるように<br>
           編成を変更して再度お試しください💦
         </div>
       `;
@@ -160,7 +162,7 @@ async function main() {
           padding: 12px;
         ">
           ポイント調整可能な楽曲が存在しません😭<br>
-          イベントボーナスが <strong>${minAllowedEventBonus}% ～ ${maxAllowedEventBonus}%</strong> の範囲になるように<br>
+          イベントボーナスが <strong>${minAllowedEventBonus}% ～ ${maxAllowedEventBonus}%</strong> の間になるように<br>
           編成を変更して再度お試しください💦
         </div>
       `;
