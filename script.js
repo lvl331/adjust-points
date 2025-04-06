@@ -235,7 +235,7 @@ function displayHitorinboEnvyResult({
   const remainingPoints = targetPoints - totalPoints;
 
   document.getElementById("results-content").innerHTML = `
-    ✅ <strong>独りんぼエンヴィーで目標のイベントPまで近づけましょう！</strong><br><br>
+    ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
     🎵 楽曲: ${data.title}<br>
     💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
     🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
