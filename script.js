@@ -212,11 +212,11 @@ function displayMatchResult({
 }) {
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>調整可能な楽曲が見つかりました！</strong><br><br>
-    🎵 楽曲: ${song.title}<br>
+    🎵 楽曲: ${song.title}(${song.difficultyName})<br>
     🔢 スコア: ${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
     💥 ライボ消費数: ${song.requiredLiveBonusUsed}<br>
     💡 イベントボーナス: ${eventBonus} %<br>
-    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br>
+    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
     📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
     🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
   `;
@@ -236,11 +236,11 @@ function displayHitorinboEnvyResult({
 
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
-    🎵 楽曲: ${data.title}<br>
+    🎵 楽曲: ${data.title}(${data.difficultyName})<br>
     🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
     💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
     💡 イベントボーナス: ${eventBonus} %<br>
-    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br>
+    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
     📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
     🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
 
