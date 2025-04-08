@@ -26,13 +26,14 @@
       text-align: center;
       color: #34495e;
       font-size: 28px;
-      margin-bottom: 30px;
+      margin-top: -3px;
+      margin-bottom: 15px;
     }
 
     fieldset {
       border: 1px solid #d0d9e6;
       border-radius: 12px;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
       padding: 20px 20px 20px;
     }
 
@@ -130,7 +131,7 @@
 
     .calculate-button-area {
       text-align: right;
-      margin-top: -15px;
+      margin-top: -10px;
       margin-bottom: 30px;
     }
 
@@ -142,6 +143,7 @@
 
     .apply-button-area {
       text-align: right;
+      margin-top: 35px;
     }
 
     .apply-button-area button {
@@ -159,6 +161,8 @@
 
       h2 {
         font-size: 22px;
+        margin-top: 2px;
+        margin-bottom: 10px;
       }
 
       legend {
@@ -175,11 +179,16 @@
         font-size: 14px;
       }
 
-      input[type="number"],
+      input[type="number"]{
+        font-size: 14px;
+        padding: 6px 10px;
+        height: 21px;
+        width: 92.5%;
+      }
       select {
         font-size: 14px;
         padding: 6px 10px;
-        height: 38px;
+        height: 32px;
         width: 92.5%;
       }
 
@@ -203,7 +212,7 @@
       }
 
       #results div {
-        font-size: 13px;
+        font-size: 12.5px;
       }
 
       .container {
@@ -392,24 +401,3 @@
   <script src="script.js" defer></script>
 </body>
 </html>
-
-<!--
-<注意事項>
-1.イベントボーナスの小数点以下を必ずご確認ください。
-小数点以下が不明な場合は、次のように操作することで確認できます。
-・マラソン or チアフル → 編成のメンバー選択画面でソートを「イベントボーナス」にする。
-・ワールドリンク → 編成画面の「i」ボタンを押す。
-
-2.スキルや総合力を正確に入力しなくてもポイント調整可能ですが、出力されたスコアに到達できない可能性がありますので正確に入力することを推奨します。
-
-<その他>
-・レベル上限
-安定してフルコン可能なレベル(APPENDを除く)を入力してください。
-
-・ライボ上限
-ポイント調整を早く終えたい場合は10、石を節約したい場合は5にしてください。
-
-・マージン
-計算結果に出力されるスコアに余裕をもたせる倍率です。
-0.95の場合、理論値スコアが100万なら出力されるスコアは95万以下になります。
--->

@@ -55,17 +55,17 @@ async function main() {
   // 調整不可能な条件をチェックして、早期終了
   if (remainingEventPoints === 0) {
     document.getElementById("results-content").innerHTML = `
-      <strong>現在のイベントPと目標のイベントPが一致しています！</strong>
+      ✅ <strong>現在のイベントPと目標のイベントPが一致しています！</strong>
     `
     document.getElementById("apply-result-button").style.display = "none";
     return;
   } else if (remainingEventPoints < 100) {
-    displayNoAdjustableResults(`現在のイベントPから目標のイベントPまで100P未満のため、調整できません😭<br>目標のイベントPを変更してください！`);
+    displayNoAdjustableResults(`現在のイベントPから目標のイベントPまで100P未満のため、調整できません。<br>目標のイベントPを変更してください！`);
     return;
   } else if (remainingEventPoints < 100 + teamData.eventBonus) {
     const maxBonus = Math.floor(remainingEventPoints - 100);
     const str = remainingEventPoints === 100 ? "" : "以下";
-    displayNoAdjustableResults(`現在の条件では調整できません😭<br>イベントボーナスを${maxBonus}%${str}にしてください！`);
+    displayNoAdjustableResults(`現在の条件では調整できません。<br>イベントボーナスを${maxBonus}%${str}にしてください！`);
     return;
   }
    // 有効な楽曲定数を取得
@@ -95,6 +95,8 @@ async function main() {
       const shortestSong = getShortestDurationSong(matchingSongs, musicInfo);
       displayMatchResult({
         song: shortestSong,
+        targetPoints: targetEventPoints,
+        currentPoints: currentEventPoints,
         earnedPoints: remainingEventPoints,
         totalPoints: targetEventPoints,
         eventBonus: teamData.eventBonus,
@@ -138,8 +140,8 @@ async function main() {
       if (validHitorinboEnvyData){
         displayHitorinboEnvyResult({
           data: validHitorinboEnvyData,
-          currentPoints: currentEventPoints,
           targetPoints: targetEventPoints,
+          currentPoints: currentEventPoints,
           eventBonus: teamData.eventBonus,
           minAllowedEventBonus,
           maxAllowedEventBonus
@@ -185,50 +187,45 @@ function validateInputs(targetEventPoints, currentEventPoints, teamData) {
 
 function displayNoAdjustableResults(message) {
   document.getElementById("results-content").innerHTML = `
-    <div style="
-      color: #e67e22;  /* 明るめのオレンジ */
-      font-weight: bold;
-      font-size: 16px;
-      padding: 12px;
-    ">
       ${message}
-    </div>
   `;
   document.getElementById("apply-result-button").style.display = "none";
 }
 
 function displayNoMatchResult(minEventBonus, maxEventBonus) {
   document.getElementById("results-content").innerHTML = `
-    <div style="
-      color: #e67e22;  /* 明るめのオレンジ */
-      font-weight: bold;
-      font-size: 16px;
-      padding: 12px;
-    ">
-      ポイント調整可能な楽曲が見つかりませんでした😭<br>
+      ポイント調整可能な楽曲が見つかりませんでした。<br>
       イベントボーナスが<strong>${(minEventBonus)}% ～ ${(maxEventBonus)}%</strong>の間になるように編成を変更して再度お試しください！<br>
-      ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
-    </div>
+      ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります
   `;
   document.getElementById("apply-result-button").style.display = "none";
 }
 
 function displayMatchResult({
   song,
+  targetPoints,
+  currentPoints,
   earnedPoints,
   totalPoints,
   eventBonus,
-  remainingPoints = 0
+  remainingPoints
 }) {
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>調整可能な楽曲が見つかりました！</strong><br><br>
-    🎵 楽曲: ${song.title}(${song.difficultyName})<br>
-    🔢 スコア: ${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
-    💥 ライボ消費数: ${song.requiredLiveBonusUsed}<br>
-    💡 イベントボーナス: ${eventBonus} %<br>
-    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
-    📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
-    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
+    ▼ポイント確認<br>
+    目標のイベントP：${targetPoints} P<br>
+    現在のイベントP：${currentPoints} P<br>
+    <br>
+    ▼ポイント調整<br>
+    楽曲：${song.title} (${song.difficultyName.toUpperCase()})<br>
+    スコア：${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
+    ライボ消費数：${song.requiredLiveBonusUsed}<br>
+    イベントボーナス：${eventBonus} %<br>
+    獲得イベントP：${earnedPoints.toLocaleString()} P<br>
+    <br>
+    ▼ポイント獲得後<br>
+    累計イベントP：${totalPoints.toLocaleString()} P<br>
+    目標までのイベントP：${remainingPoints.toLocaleString()} P
   `;
   // ボタンを表示
   document.getElementById("apply-result-button").style.display = "inline-block";
@@ -236,8 +233,8 @@ function displayMatchResult({
 
 function displayHitorinboEnvyResult({
   data,
-  currentPoints,
   targetPoints,
+  currentPoints,
   eventBonus,
   minAllowedEventBonus,
   maxAllowedEventBonus
@@ -247,19 +244,25 @@ function displayHitorinboEnvyResult({
   const remainingPoints = targetPoints - totalPoints;
 
   let resultContent = `
-  ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
-  🎵 楽曲: ${data.title}(${data.difficultyName})<br>
-  🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
-  💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
-  💡 イベントボーナス: ${eventBonus} %<br>
-  🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
-  📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
-  🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
-`;
+    ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
+    ▼ポイント確認<br>
+    目標のイベントP：${targetPoints} P<br>
+    現在のイベントP：${currentPoints} P<br>
+    <br>
+    ▼ポイント調整<br>
+    楽曲：${data.title} (${data.difficultyName.toUpperCase()})<br>
+    スコア：${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
+    ライボ消費数：${data.requiredLiveBonusUsed}<br>
+    イベントボーナス：${eventBonus} %<br>
+    獲得イベントP：${earnedPoints.toLocaleString()} P<br>
+    <br>
+    ▼ポイント獲得後<br>
+    累計イベントP：${totalPoints.toLocaleString()} P<br>
+    目標までのイベントP：${remainingPoints.toLocaleString()} P
+  `;
 
 if (minAllowedEventBonus !== -99999) {
   resultContent += `
-    <br>
     <br>
     <br>
     <strong>▼備考</strong><br>
@@ -721,7 +724,7 @@ function applyResult() {
   const resultsContent = document.getElementById("results-content");
   if (!resultsContent) return;
 
-  const match = resultsContent.innerHTML.match(/獲得イベントP:\s*([\d,]+) P/);
+  const match = resultsContent.innerHTML.match(/獲得イベントP：\s*([\d,]+) P/);
   if (!match) {
     alert("獲得イベントPが見つかりませんでした。");
     return;
