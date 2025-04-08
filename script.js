@@ -179,9 +179,9 @@ function validateInputs(targetEventPoints, currentEventPoints, teamData) {
     throw new Error("総合力は50,000以上の数値を入力してください。");
   }
 
-  // eventBonus が0以上かチェック
-  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0) {
-    throw new Error("イベントボーナスは0以上の数値を入力してください。");
+  // eventBonus が0以上1000以下かチェック
+  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 1000) {
+    throw new Error("イベントボーナスは0～1000の数値を入力してください。");
   }
 }
 
