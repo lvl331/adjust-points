@@ -40,13 +40,14 @@
     legend {
       font-weight: bold;
       font-size: 20px;
-      margin-bottom: -10px;
+      margin-bottom: -20px;
       color: #2980b9;
     }
 
     label {
       display: block;
       margin-top: 5px;
+      margin-bottom: -3px;
       font-size: 15px;
       font-weight: 500;
     }
@@ -117,10 +118,10 @@
     }
 
     #apply-result-button {
-      margin-top: 20px;
+      margin-top: -30px;
       display: none;
       background-color: #2ecc71;
-      transform: translateY(-150px);
+      transform: translateY(0px);
     }
 
     #apply-result-button:hover {
@@ -129,7 +130,7 @@
 
     .calculate-button-area {
       text-align: right;
-      margin-top: -5px;
+      margin-top: -15px;
       margin-bottom: 30px;
     }
 
@@ -141,14 +142,13 @@
 
     .apply-button-area {
       text-align: right;
-      margin-bottom: 40px;
-      margin-right: 48px;
     }
 
     .apply-button-area button {
       width: 120px;
       padding: 10px 0;
       font-size: 14px;
+      margin-bottom: -10px;
     }
     @media screen and (max-width: 600px) {
       body {
@@ -161,8 +161,14 @@
 
       legend {
         font-size: 17px;
+        margin-bottom: -10px;
       }
-
+      label {
+      display: block;
+      margin-top: 5px;
+      font-size: 15px;
+      font-weight: 500;
+    }
       label {
         font-size: 14px;
       }
@@ -242,9 +248,9 @@
     <fieldset>
       <legend>イベントP</legend>
       <label>目標のイベントP</label>
-      <input type="number" id="target-event-points" value="39390831">
+      <input type="number" id="target-event-points" value="0">
       <label>現在のイベントP</label>
-      <input type="number" id="current-event-points" value="39390000">
+      <input type="number" id="current-event-points" value="0">
     </fieldset>
 
     <fieldset>
@@ -260,7 +266,7 @@
       <label>5枠スキル(%)</label>
       <input type="number" id="skill-5" value="100">
       <label>総合力</label>
-      <input type="number" id="talent" value="380000">
+      <input type="number" id="talent" value="360000">
       <label>イベントボーナス(%)</label>
       <input type="number" id="event-bonus" value="350">
     </fieldset>
@@ -295,16 +301,7 @@
         <div class="input-block">
           <label for="max-live-bonus">ライボ上限</label>
           <select id="max-live-bonus">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
             <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
             <option value="10" selected>10</option>
           </select>
         </div>
@@ -349,8 +346,56 @@
     <div class="apply-button-area">
       <button id="apply-result-button" onclick="applyResult()">反映する</button>
     </div>
+    <br>
+    <br>
+    <fieldset>
+      <legend>注意事項</legend>
+      <div style="margin-top: -10px; margin-bottom: -15px; margin-left: -17px;">
+        <ul>
+          <li><strong>イベントボーナスの小数点以下を必ずご確認ください。</strong><br>
+              小数点以下が不明な場合は、次のように操作することで確認できます。<br>
+              マラソン or チアフル → 編成のメンバー選択画面でソートを「イベントボーナス」にする。<br>
+              ワールドリンク → 編成画面の「i」ボタンを押す。
+          </li>
+          <li><strong>スキルや総合力が正確に入力されていなくてもポイント調整は可能ですが、正確に入力されていない場合は出力されたスコアに到達できない場合があります。</strong></li>
+        </ul>
+      </div>
+    </fieldset>
+    
+    <fieldset>
+      <legend>その他</legend>
+      <div style="margin-top: -10px; margin-bottom: -15px; margin-left: -17px;">
+        <ul>
+          <li><strong>レベル上限</strong><br>安定してフルコン可能なレベル(APPENDを除く)を入力してください。</li>
+          <li><strong>ライボ上限</strong><br>ポイント調整を早く終えたい場合は10、石を節約したい場合は5にしてください。</li>
+          <li><strong>マージン</strong><br>計算結果に出力されるスコアに余裕をもたせる倍率です。<br>0.95の場合、理論値スコアが100万であれば、出力されるスコアは最大で95万となります。</li>
+        </ul>
+      </div>
+    </fieldset>
+    
   </div>
 
   <script src="script.js" defer></script>
 </body>
 </html>
+
+<!--
+<注意事項>
+1.イベントボーナスの小数点以下を必ずご確認ください。
+小数点以下が不明な場合は、次のように操作することで確認できます。
+・マラソン or チアフル → 編成のメンバー選択画面でソートを「イベントボーナス」にする。
+・ワールドリンク → 編成画面の「i」ボタンを押す。
+
+2.スキルや総合力を正確に入力しなくてもポイント調整可能ですが、出力されたスコアに到達できない可能性がありますので正確に入力することを推奨します。
+
+<その他>
+・レベル上限
+安定してフルコン可能なレベル(APPENDを除く)を入力してください。
+
+・ライボ上限
+ポイント調整を早く終えたい場合は10、石を節約したい場合は5にしてください。
+
+・マージン
+計算結果に出力されるスコアに余裕をもたせる倍率です。
+0.95の場合、理論値スコアが100万なら出力されるスコアは95万以下になります。
+-->

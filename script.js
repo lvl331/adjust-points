@@ -6,7 +6,7 @@ async function main() {
 
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
-
+  
   const teamData = {
     skills: [
       getNumberById('skill-1'),
@@ -18,84 +18,39 @@ async function main() {
     talent: getNumberById('talent'),
     eventBonus: getNumberById('event-bonus')
   };
-
   const maxLevel = getNumberById('max-level');
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
   // スコアのマージン係数
   const scoreMarginMultiplier = getNumberById('score-margin-multiplier');
 
-  /*
-  const targetEventPoints = 88;
-  const currentEventPoints = 0;
-
-  const teamData = {
-    skills: [
-      150,
-      140,
-      130,
-      120,
-      100
-    ],
-    talent: 380000,
-    eventBonus: 350
-  };
-
-  const maxLevel = 25;
-  const maxLiveBonusUsed = 10;
-  // スコアのマージン係数
-  const scoreMarginMultiplier = 0.95;
-  */
+  // 残りのイベントP
+  const remainingEventPoints = targetEventPoints - currentEventPoints;
   // ひとりでライブ固定
   const liveMode = 'soloLive';
   const liveData = soloLiveData;
   const encoreSkillNumber = 1;
   // マラソン固定
   const eventType = 'marathon';
-  // 残りのイベントP
-  const remainingEventPoints = targetEventPoints - currentEventPoints;
-  // 赤エビで近づける時のバッファー
-  const bufferPoints = 100 + teamData.eventBonus * 1.5
+  // 赤エビで近づける時のバッファー(このポイント以上は近づかないようにする)
+  const bufferPoints = 100 + teamData.eventBonus * 1.2
 
   // 調整不可能な条件をチェックして、早期終了
   if (remainingEventPoints === 0) {
     document.getElementById("results-content").innerHTML = `
-    <strong>現在のイベントPと目標のイベントPが一致しています！</strong>
+      <strong>現在のイベントPと目標のイベントPが一致しています！</strong>
     `
     document.getElementById("apply-result-button").style.display = "none";
     return;
   } else if (remainingEventPoints < 100) {
-    document.getElementById("results-content").innerHTML = `
-      <div style="
-        color: #e67e22;  /* 明るめのオレンジ */
-        font-weight: bold;
-        font-size: 16px;
-        padding: 12px;
-      ">
-        現在のイベントPから目標のイベントPまで100P未満のため、調整できません😭<br>
-        目標のイベントPを変更してください💦
-      </div>
-    `;
-    document.getElementById("apply-result-button").style.display = "none";
+    displayNoAdjustableResults(`現在のイベントPから目標のイベントPまで100P未満のため、調整できません😭<br>目標のイベントPを変更してください！`);
     return;
-  } else if (remainingEventPoints <= 100 + teamData.eventBonus) {
+  } else if (remainingEventPoints < 100 + teamData.eventBonus) {
     const maxBonus = Math.floor(remainingEventPoints - 100);
-    const limitNote = remainingEventPoints === 100 ? "" : "以下";
-
-    document.getElementById("results-content").innerHTML = `
-      <div style="
-        color: #e67e22;
-        font-weight: bold;
-        font-size: 16px;
-        padding: 12px;
-      ">
-        現在の条件では調整できません😭<br>
-        イベントボーナスを <strong>${maxBonus}%</strong>${limitNote} にしてください💦
-      </div>
-    `;
-    document.getElementById("apply-result-button").style.display = "none";
+    const str = remainingEventPoints === 100 ? "" : "以下";
+    displayNoAdjustableResults(`現在の条件では調整できません😭<br>イベントボーナスを${maxBonus}%${str}にしてください！`);
     return;
   }
-
+   // 有効な楽曲定数を取得
   const validSongConstMatches = getValidSongConstMatches({
     remainingEventPoints: remainingEventPoints,
     eventBonus: teamData.eventBonus,
@@ -104,7 +59,8 @@ async function main() {
     maxLiveBonusUsed: maxLiveBonusUsed
   });
 
-  // 有効な楽曲定数があるかどうか判定して処理
+  // 有効な楽曲定数があれば、該当する楽曲を検索し、調整可否を検証
+  // 調整可能な楽曲があれば、その中で一番短い曲を取得して計算結果を出力する
   let isValidSongConstFound = false;
   if (validSongConstMatches.length > 0) {
     let matchingSongs = [];
@@ -117,8 +73,6 @@ async function main() {
       encoreSkillNumber: encoreSkillNumber,
       scoreMarginMultiplier: scoreMarginMultiplier
     })
-    // requiredScoreRatio が小さい順にソート
-    // const sortedMatchingSongs = [...matchingSongs].sort((a, b) => a.requiredScoreRatio - b.requiredScoreRatio);
     if (matchingSongs.length > 0) {
       const shortestSong = getShortestDurationSong(matchingSongs, musicInfo);
       displayMatchResult({
@@ -129,55 +83,31 @@ async function main() {
         remainingPoints: 0
       });
       isValidSongConstFound = true;
+      return;
     } 
   }
 
+  const maxAllowedEventBonus = calculateMaxAllowedEventBonus(remainingEventPoints);
+  const minAllowedEventBonus = calculateMinAllowedEventBonus({
+    remainingEventPoints,
+    teamData,
+    scoreMarginMultiplier,
+    musicInfo,
+    liveData,
+    liveMode,
+    eventType,
+    encoreSkillNumber
+  });
+  // 有効な楽曲定数が存在しない場合
   if (isValidSongConstFound === false) {
     if (remainingEventPoints < 200) {
-      document.getElementById("results-content").innerHTML = `
-        <div style="
-          color: #e67e22;  /* 明るめのオレンジ */
-          font-weight: bold;
-          font-size: 16px;
-          padding: 12px;
-        ">
-          ポイント調整可能な楽曲が存在しません😭<br>
-          イベントボーナスが <strong>0% ～ ${(remainingEventPoints - 100)}%</strong> の間になるように<br>
-          編成を変更して再度お試しください💦
-        </div>
-      `;
-      document.getElementById("apply-result-button").style.display = "none";
+      displayNoMatchResult(0, remainingEventPoints - 100);
       return;
-    } else if (remainingEventPoints < 800){
-      const maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 7);
-      const minAllowedEventBonus = calculateMinAllowedEventBonus({
-        remainingEventPoints,
-        teamData,
-        scoreMarginMultiplier,
-        musicInfo,
-        liveData,
-        liveMode,
-        eventType,
-        encoreSkillNumber
-      });
-      document.getElementById("results-content").innerHTML = `
-        <div style="
-          color: #e67e22;  /* 明るめのオレンジ */
-          font-weight: bold;
-          font-size: 16px;
-          padding: 12px;
-        ">
-          ポイント調整可能な楽曲が存在しません😭<br>
-          イベントボーナスが <strong>${minAllowedEventBonus}% ～ ${maxAllowedEventBonus}%</strong> の間になるように<br>
-          編成を変更して再度お試しください💦
-        </div>
-      `;
-      document.getElementById("apply-result-button").style.display = "none";
+    } else if (remainingEventPoints < 0){
+      displayNoMatchResult(minAllowedEventBonus, maxAllowedEventBonus);
       return;
     } else {
-      const validHitorinboEnvyData = findValidFallbackSongData({
-        title: "独りんぼエンヴィー",
-        difficultyName: "expert",
+      const validHitorinboEnvyData = findValidHitorinboEnvyData({
         teamData,
         musicInfo,
         liveData,
@@ -195,12 +125,47 @@ async function main() {
           data: validHitorinboEnvyData,
           currentPoints: currentEventPoints,
           targetPoints: targetEventPoints,
-          eventBonus: teamData.eventBonus
-        }
-        );
+          eventBonus: teamData.eventBonus,
+          minAllowedEventBonus,
+          maxAllowedEventBonus
+        });
+        return;
       }
     }
   }
+  // どれにも当てはまらない場合
+  displayNoMatchResult(minAllowedEventBonus, maxAllowedEventBonus);
+  return;
+}
+
+function displayNoAdjustableResults(message) {
+  document.getElementById("results-content").innerHTML = `
+    <div style="
+      color: #e67e22;  /* 明るめのオレンジ */
+      font-weight: bold;
+      font-size: 16px;
+      padding: 12px;
+    ">
+      ${message}
+    </div>
+  `;
+  document.getElementById("apply-result-button").style.display = "none";
+}
+
+function displayNoMatchResult(minEventBonus, maxEventBonus) {
+  document.getElementById("results-content").innerHTML = `
+    <div style="
+      color: #e67e22;  /* 明るめのオレンジ */
+      font-weight: bold;
+      font-size: 16px;
+      padding: 12px;
+    ">
+      ポイント調整可能な楽曲が存在しません😭<br>
+      イベントボーナスが<strong>${(minEventBonus)}% ～ ${(maxEventBonus)}%</strong>の間になるように編成を変更して再度お試しください！<br>
+      ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
+    </div>
+  `;
+  document.getElementById("apply-result-button").style.display = "none";
 }
 
 function displayMatchResult({
@@ -228,7 +193,9 @@ function displayHitorinboEnvyResult({
   data,
   currentPoints,
   targetPoints,
-  eventBonus
+  eventBonus,
+  minAllowedEventBonus,
+  maxAllowedEventBonus
 }) {
   const earnedPoints = data.earnedEventPoints;
   const totalPoints = currentPoints + earnedPoints;
@@ -242,16 +209,20 @@ function displayHitorinboEnvyResult({
     💡 イベントボーナス: ${eventBonus} %<br>
     🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
     📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
-    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
-
+    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P <br>
+    <br>
+    <br>
+    <strong>▼備考</strong><br>
+    獲得ポイントを ${(targetPoints - currentPoints).toLocaleString()} P ちょうどにしたい場合は<br>
+    イベントボーナスが${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
+    ※${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
   `;
+
   // ボタンを表示
   document.getElementById("apply-result-button").style.display = "inline-block";
 }
 
-function findValidFallbackSongData({
-  title,
-  difficultyName,
+function findValidHitorinboEnvyData({
   teamData,
   musicInfo,
   liveData,
@@ -264,6 +235,8 @@ function findValidFallbackSongData({
   eventType,
   encoreSkillNumber
 }) {
+  const title = "独りんぼエンヴィー";
+  const difficultyName = "expert";
   const scoreInfo = calculateScore({
     title,
     difficultyName,
@@ -272,7 +245,6 @@ function findValidFallbackSongData({
     musicInfo,
     liveData
   });
-
   const maxAllowedScore = Math.floor((scoreInfo.min * scoreMarginMultiplier) / 20000) * 20000;
   const songConst = getSongDataByTitle(title, musicInfo).songConst;
 
@@ -303,6 +275,10 @@ function findValidFallbackSongData({
   return null;
 }
 
+function calculateMaxAllowedEventBonus(remainingEventPoints){
+  maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 6.5);
+ return maxAllowedEventBonus;
+}
 
 function calculateMinAllowedEventBonus({
   remainingEventPoints,
@@ -347,8 +323,6 @@ function calculateMinAllowedEventBonus({
   }
   return minAllowedEventBonus;
 }
-
-
 
 function loadCSV(url) {
   return fetch(url)
@@ -405,7 +379,6 @@ function calculateEventPoints({
 
   return eventPoints;
 }
-
 
 function getEventTypeConst(eventType) {
   let eventTypeConst;
