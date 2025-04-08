@@ -154,6 +154,12 @@
       top: -3px;
       margin-bottom: -10px;
     }
+
+    .note-content, .other-content {
+      margin-top: -12px;
+      margin-bottom: -17px;
+    }
+
     @media screen and (max-width: 600px) {
       body {
         font-size: 12px;
@@ -247,6 +253,12 @@
       fieldset {
         width: 100%;
         box-sizing: border-box;
+      }
+
+      .note-content, .other-content {
+        margin-top: -10px;
+        margin-bottom: -8px;
+        margin-left: 4px;
       }
 
     }
@@ -361,7 +373,7 @@
     <br>
     <fieldset>
       <legend>注意事項</legend>
-      <div style="margin-top: -12px; margin-bottom: -17px; margin-left: 0px;">
+      <div class="note-content">
         <p><strong>▼イベントボーナスについて</strong><br>
           小数点以下を必ずご確認ください。<br>
           次のように操作することで確認できます。<br>
@@ -378,7 +390,7 @@
     
     <fieldset>
       <legend>その他</legend>
-      <div style="margin-top: -12px; margin-bottom: -17px; margin-left: 0px;">
+      <div class="other-content">
         <p>
           <strong>▼レベル上限</strong><br>
           安定してフルコン可能なレベル(APPENDを除く)を入力してください。
