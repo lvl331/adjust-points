@@ -6,6 +6,15 @@ async function main() {
 
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
+
+  if (!Number.isInteger(targetEventPoints) || targetEventPoints <= 0) {
+    // 正の整数でない場合、アラートを表示
+    alert("目標のイベントPは正の整数でなければなりません。");
+    
+    // 結果表示を空白にして、関数を終了
+    document.getElementById("results-content").innerHTML = "";
+    return;
+  }
   
   const teamData = {
     skills: [
@@ -32,7 +41,7 @@ async function main() {
   // マラソン固定
   const eventType = 'marathon';
   // 赤エビで近づける時のバッファー(このポイント以上は近づかないようにする)
-  const bufferPoints = 100 + teamData.eventBonus * 1.2
+  const bufferPoints = 100 + teamData.eventBonus * 1.3
 
   // 調整不可能な条件をチェックして、早期終了
   if (remainingEventPoints === 0) {
@@ -103,9 +112,6 @@ async function main() {
     if (remainingEventPoints < 200) {
       displayNoMatchResult(0, remainingEventPoints - 100);
       return;
-    } else if (remainingEventPoints < 0){
-      displayNoMatchResult(minAllowedEventBonus, maxAllowedEventBonus);
-      return;
     } else {
       const validHitorinboEnvyData = findValidHitorinboEnvyData({
         teamData,
@@ -160,7 +166,7 @@ function displayNoMatchResult(minEventBonus, maxEventBonus) {
       font-size: 16px;
       padding: 12px;
     ">
-      ポイント調整可能な楽曲が存在しません😭<br>
+      ポイント調整可能な楽曲が見つかりませんでした😭<br>
       イベントボーナスが<strong>${(minEventBonus)}% ～ ${(maxEventBonus)}%</strong>の間になるように編成を変更して再度お試しください！<br>
       ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
     </div>
@@ -201,23 +207,30 @@ function displayHitorinboEnvyResult({
   const totalPoints = currentPoints + earnedPoints;
   const remainingPoints = targetPoints - totalPoints;
 
-  document.getElementById("results-content").innerHTML = `
-    ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
-    🎵 楽曲: ${data.title}(${data.difficultyName})<br>
-    🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
-    💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
-    💡 イベントボーナス: ${eventBonus} %<br>
-    🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
-    📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
-    🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P <br>
+  let resultContent = `
+  ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
+  🎵 楽曲: ${data.title}(${data.difficultyName})<br>
+  🔢 スコア: ${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
+  💥 ライボ消費数: ${data.requiredLiveBonusUsed}<br>
+  💡 イベントボーナス: ${eventBonus} %<br>
+  🎁 獲得イベントP: ${earnedPoints.toLocaleString()} P<br><br>
+  📈 獲得後の累計イベントP: ${totalPoints.toLocaleString()} P<br>
+  🎯 目標までのイベントP: ${remainingPoints.toLocaleString()} P
+`;
+
+if (minAllowedEventBonus !== -99999) {
+  resultContent += `
+    <br>
     <br>
     <br>
     <strong>▼備考</strong><br>
-    獲得ポイントを ${(targetPoints - currentPoints).toLocaleString()} P ちょうどにしたい場合は<br>
+    獲得ポイントを ${(targetPoints - currentPoints).toLocaleString()} P ちょうどにしたい場合は
     イベントボーナスが${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
     ※${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
   `;
+}
 
+  document.getElementById("results-content").innerHTML = resultContent;
   // ボタンを表示
   document.getElementById("apply-result-button").style.display = "inline-block";
 }
@@ -290,7 +303,7 @@ function calculateMinAllowedEventBonus({
   eventType,
   encoreSkillNumber
 }) {
-  let minAllowedEventBonus = -1;
+  let minAllowedEventBonus = -99999;
 
   const meltExpertScore = calculateScore({
     title: "メルト",
@@ -317,9 +330,6 @@ function calculateMinAllowedEventBonus({
       minAllowedEventBonus = eventBonus + Math.floor(remainingEventPoints / 50);
       break;
     }
-  }
-  if (minAllowedEventBonus === -1) {
-    throw new Error("ポイント調整可能なイベントボーナスの最小値が見つかりませんでした。");
   }
   return minAllowedEventBonus;
 }
