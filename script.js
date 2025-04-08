@@ -1,20 +1,9 @@
 async function main() {
   const musicInfo = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/music_info.csv');
   const soloLiveData = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/solo_live_data.csv');
-  const multiLiveData1 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_1.csv');
-  const multiLiveData2 = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/multi_live_data_2.csv');
 
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
-
-  if (!Number.isInteger(targetEventPoints) || targetEventPoints <= 0) {
-    // 正の整数でない場合、アラートを表示
-    alert("目標のイベントPは正の整数でなければなりません。");
-    
-    // 結果表示を空白にして、関数を終了
-    document.getElementById("results-content").innerHTML = "";
-    return;
-  }
 
   const teamData = {
     skills: [
@@ -29,15 +18,12 @@ async function main() {
   };
   const maxLevel = getNumberById('max-level');
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
-  // スコアのマージン係数
-  const scoreMarginMultiplier = getNumberById('score-margin-multiplier');
+  // スコアのバッファ係数
+  const scoreBufferMultiplier = getNumberById('score-buffer-multiplier');
   // 入力値の検証
   try {
     validateInputs(targetEventPoints, currentEventPoints, teamData);
   } catch (error) {
-    alert(error.message);  // エラーメッセージをアラートで表示
-    document.getElementById("results-content").innerHTML = "";
-    document.getElementById("apply-result-button").style.display = "none"; // ボタンを非表示
     return;
   }
 
@@ -49,7 +35,7 @@ async function main() {
   const encoreSkillNumber = 1;
   // マラソン固定
   const eventType = 'marathon';
-  // 赤エビで近づける時のバッファー(このポイント以上は近づかないようにする)
+  // 赤エビで近づける時のバッファ(このポイント以上は近づかないようにする)
   const bufferPoints = 100 + teamData.eventBonus * 1.3
 
   // 調整不可能な条件をチェックして、早期終了
@@ -89,7 +75,7 @@ async function main() {
       teamData: teamData,
       maxLevel: maxLevel,
       encoreSkillNumber: encoreSkillNumber,
-      scoreMarginMultiplier: scoreMarginMultiplier
+      scoreBufferMultiplier: scoreBufferMultiplier
     })
     if (matchingSongs.length > 0) {
       const shortestSong = getShortestDurationSong(matchingSongs, musicInfo);
@@ -111,7 +97,7 @@ async function main() {
   const minAllowedEventBonus = calculateMinAllowedEventBonus({
     remainingEventPoints,
     teamData,
-    scoreMarginMultiplier,
+    scoreBufferMultiplier,
     musicInfo,
     liveData,
     liveMode,
@@ -128,7 +114,7 @@ async function main() {
         teamData,
         musicInfo,
         liveData,
-        scoreMarginMultiplier,
+        scoreBufferMultiplier,
         remainingEventPoints,
         eventBonus: teamData.eventBonus,
         bufferPoints,
@@ -156,34 +142,47 @@ async function main() {
 }
 
 // 入力値を検証する関数
+// 入力値を検証する関数
 function validateInputs(targetEventPoints, currentEventPoints, teamData) {
+  const errors = [];
+
   // targetEventPoints が 0 以上の整数か確認
   if (!Number.isInteger(targetEventPoints) || targetEventPoints < 0) {
-    throw new Error("目標のイベントPは0以上の整数を入力してください。");
+    errors.push("目標のイベントPは0以上の整数を入力してください。");
   }
 
   // currentEventPoints が 0 以上の整数か確認
   if (!Number.isInteger(currentEventPoints) || currentEventPoints < 0) {
-    throw new Error("現在のイベントPは0以上の整数を入力してください。");
+    errors.push("現在のイベントPは0以上の整数を入力してください。");
   }
 
   // teamData.skills[1] ～ teamData.skills[5] が10以上200以下かチェック
   for (let i = 0; i < teamData.skills.length; i++) {
     if (isNaN(teamData.skills[i]) || teamData.skills[i] < 10 || teamData.skills[i] > 200) {
-      throw new Error("各スキルは10～200の数値を入力してください。");
+      errors.push("各スキルは10～200の数値を入力してください。");
+      break; // 1つでもエラーがあれば、それ以上のスキルチェックは不要
     }
   }
 
-  // talent が50000以上の整数か確認
-  if (isNaN(teamData.talent) || teamData.talent < 50000) {
-    throw new Error("総合力は50,000以上の数値を入力してください。");
+  // talent が50000以上1000000以下かチェック
+  if (isNaN(teamData.talent) || teamData.talent < 50000 || teamData.talent > 1000000) {
+    errors.push("総合力は50,000～1,000,000の数値を入力してください。");
   }
 
   // eventBonus が0以上1000以下かチェック
   if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 1000) {
-    throw new Error("イベントボーナスは0～1000の数値を入力してください。");
+    errors.push("イベントボーナスは0～1000の数値を入力してください。");
+  }
+
+  if (errors.length > 0) {
+    // エラーメッセージを一括で表示
+    alert(errors.join("\n"));
+    document.getElementById("results-content").innerHTML = "";
+    document.getElementById("apply-result-button").style.display = "none"; // ボタンを非表示
+    throw new Error(errors.join("\n"));  // エラーをスローして処理を終了
   }
 }
+
 
 function displayNoAdjustableResults(message) {
   document.getElementById("results-content").innerHTML = `
@@ -281,7 +280,7 @@ function findValidHitorinboEnvyData({
   teamData,
   musicInfo,
   liveData,
-  scoreMarginMultiplier,
+  scoreBufferMultiplier,
   remainingEventPoints,
   eventBonus,
   bufferPoints,
@@ -300,7 +299,7 @@ function findValidHitorinboEnvyData({
     musicInfo,
     liveData
   });
-  const maxAllowedScore = Math.floor((scoreInfo.min * scoreMarginMultiplier) / 20000) * 20000;
+  const maxAllowedScore = Math.floor((scoreInfo.min * scoreBufferMultiplier) / 20000) * 20000;
   const songConst = getSongDataByTitle(title, musicInfo).songConst;
 
   for (let liveBonusUsed = maxLiveBonusUsed; liveBonusUsed >= 0; liveBonusUsed--) {
@@ -338,7 +337,7 @@ function calculateMaxAllowedEventBonus(remainingEventPoints){
 function calculateMinAllowedEventBonus({
   remainingEventPoints,
   teamData,
-  scoreMarginMultiplier,
+  scoreBufferMultiplier,
   musicInfo,
   liveData,
   liveMode,
@@ -360,7 +359,7 @@ function calculateMinAllowedEventBonus({
 
   for (let eventBonus = 0; eventBonus <= 1000; eventBonus++) {
     const points = calculateEventPoints({
-      totalScore: meltExpertScore.min * scoreMarginMultiplier,
+      totalScore: meltExpertScore.min * scoreBufferMultiplier,
       eventBonus,
       songConst,
       liveMode,
@@ -379,6 +378,10 @@ function calculateMinAllowedEventBonus({
 function loadCSV(url) {
   return fetch(url)
     .then(res => res.text())
+    .catch(err => {
+      console.error(`CSVの読み込み中にエラーが発生しました: ${err}`);
+      throw new Error("CSVの読み込みに失敗しました。");
+    })
     .then(text => {
       const [headerLine, ...lines] = text.trim().split('\n');
       const headers = headerLine.split(',');
@@ -388,14 +391,13 @@ function loadCSV(url) {
         const row = {};
         headers.forEach((key, i) => {
           const value = values[i];
-
-          // 数値に変換できるかチェックして変換
           row[key] = isNaN(value) ? value : Number(value);
         });
         return row;
       });
     });
 }
+
 
 function getNumberById(id) {
   return Number(document.getElementById(id).value);
@@ -662,7 +664,7 @@ function extractmatchingSongs({
   teamData,
   maxLevel,
   encoreSkillNumber,
-  scoreMarginMultiplier
+  scoreBufferMultiplier
 }) {
   let matchingSongs = [];
   const validConsts = new Set(validSongConstMatches.map(match => match.songConst)); // validSongConstMatchesからconstsのみを抽出
@@ -690,7 +692,7 @@ function extractmatchingSongs({
         musicInfo: musicInfo,
         liveData: liveData
       })
-      const maxAllowedScore = totalScore.min * scoreMarginMultiplier
+      const maxAllowedScore = totalScore.min * scoreBufferMultiplier
       if (requiredScore <= maxAllowedScore) {
         matchingSongs.push({
           title: song["楽曲名"],
@@ -724,7 +726,7 @@ function applyResult() {
   const resultsContent = document.getElementById("results-content");
   if (!resultsContent) return;
 
-  const match = resultsContent.innerHTML.match(/獲得イベントP：\s*([\d,]+) P/);
+  const match = resultsContent.innerHTML.match(/獲得イベントP[:：]\s*([\d,]+) P/);
   if (!match) {
     alert("獲得イベントPが見つかりませんでした。");
     return;
