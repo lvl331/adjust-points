@@ -15,7 +15,7 @@ async function main() {
     document.getElementById("results-content").innerHTML = "";
     return;
   }
-  
+
   const teamData = {
     skills: [
       getNumberById('skill-1'),
@@ -31,6 +31,15 @@ async function main() {
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
   // スコアのマージン係数
   const scoreMarginMultiplier = getNumberById('score-margin-multiplier');
+  // 入力値の検証
+  try {
+    validateInputs(targetEventPoints, currentEventPoints, teamData);
+  } catch (error) {
+    alert(error.message);  // エラーメッセージをアラートで表示
+    document.getElementById("results-content").innerHTML = "";
+    document.getElementById("apply-result-button").style.display = "none"; // ボタンを非表示
+    return;
+  }
 
   // 残りのイベントP
   const remainingEventPoints = targetEventPoints - currentEventPoints;
@@ -144,6 +153,36 @@ async function main() {
   return;
 }
 
+// 入力値を検証する関数
+function validateInputs(targetEventPoints, currentEventPoints, teamData) {
+  // targetEventPoints が 0 以上の整数か確認
+  if (!Number.isInteger(targetEventPoints) || targetEventPoints < 0) {
+    throw new Error("目標のイベントPは0以上の整数を入力してください。");
+  }
+
+  // currentEventPoints が 0 以上の整数か確認
+  if (!Number.isInteger(currentEventPoints) || currentEventPoints < 0) {
+    throw new Error("現在のイベントPは0以上の整数を入力してください。");
+  }
+
+  // teamData.skills[1] ～ teamData.skills[5] が10以上200以下かチェック
+  for (let i = 0; i < teamData.skills.length; i++) {
+    if (isNaN(teamData.skills[i]) || teamData.skills[i] < 10 || teamData.skills[i] > 200) {
+      throw new Error("各スキルは10～200の数値を入力してください。");
+    }
+  }
+
+  // talent が50000以上の整数か確認
+  if (isNaN(teamData.talent) || teamData.talent < 50000) {
+    throw new Error("総合力は50,000以上の数値を入力してください。");
+  }
+
+  // eventBonus が0以上かチェック
+  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0) {
+    throw new Error("イベントボーナスは0以上の数値を入力してください。");
+  }
+}
+
 function displayNoAdjustableResults(message) {
   document.getElementById("results-content").innerHTML = `
     <div style="
@@ -224,7 +263,7 @@ if (minAllowedEventBonus !== -99999) {
     <br>
     <br>
     <strong>▼備考</strong><br>
-    獲得ポイントを ${(targetPoints - currentPoints).toLocaleString()} P ちょうどにしたい場合は
+    獲得ポイントを${(targetPoints - currentPoints).toLocaleString()} Pちょうどにしたい場合は
     イベントボーナスが${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
     ※${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
   `;
