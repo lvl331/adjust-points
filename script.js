@@ -1,3 +1,4 @@
+main();
 async function main() {
   const musicInfo = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/music_info.csv');
   const soloLiveData = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/solo_live_data.csv');
@@ -20,6 +21,21 @@ async function main() {
   const maxLiveBonusUsed = getNumberById('max-live-bonus');
   // スコアのバッファ係数
   const scoreBufferMultiplier = getNumberById('score-buffer-multiplier');
+  /*
+  const targetEventPoints = 1222;
+  const currentEventPoints = 1;
+
+  const teamData = {
+    skills: [150,140,130,120,100
+    ],
+    talent: 360000,
+    eventBonus: 'あああ'
+  };
+  const maxLevel = 25;
+  const maxLiveBonusUsed = 10;
+  // スコアのバッファ係数
+  const scoreBufferMultiplier = 0.95;
+  */
   // 入力値の検証
   try {
     validateInputs(targetEventPoints, currentEventPoints, teamData);
