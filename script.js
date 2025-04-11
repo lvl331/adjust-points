@@ -372,7 +372,7 @@ function calculateMinAllowedEventBonus({
 
   const songConst = getSongDataByTitle("メルト", musicInfo).songConst;
 
-  for (let eventBonus = 0; eventBonus <= 1000; eventBonus++) {
+  for (let eventBonus = 0; eventBonus <= 800; eventBonus++) {
     const points = calculateEventPoints({
       totalScore: meltExpertScore.min * scoreBufferMultiplier,
       eventBonus,
@@ -383,7 +383,7 @@ function calculateMinAllowedEventBonus({
     });
 
     if (points >= remainingEventPoints) {
-      minAllowedEventBonus = eventBonus + Math.floor(remainingEventPoints / 50);
+      minAllowedEventBonus = eventBonus + Math.floor(remainingEventPoints / 50)
       break;
     }
   }
