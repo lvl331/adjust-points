@@ -210,8 +210,8 @@ function displayNoAdjustableResults(message) {
 function displayNoMatchResult(minEventBonus, maxEventBonus) {
   document.getElementById("results-content").innerHTML = `
       ポイント調整可能な楽曲が見つかりませんでした。<br>
-      イベントボーナスが${(minEventBonus)}% ～ ${(maxEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
-      ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります
+      イベントボーナスが${(minEventBonus)}%～${(maxEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
+      ※${(minEventBonus)}%～${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります
   `;
   document.getElementById("apply-result-button").style.display = "none";
 }
@@ -282,8 +282,8 @@ if (minAllowedEventBonus !== -99999) {
     <br>
     <strong>▼備考</strong><br>
     獲得ポイントを${(targetPoints - currentPoints).toLocaleString()} Pちょうどにしたい場合は
-    イベントボーナスが${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
-    ※${(minAllowedEventBonus)}% ～ ${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
+    イベントボーナスが${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
+    ※${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
   `;
 }
 
