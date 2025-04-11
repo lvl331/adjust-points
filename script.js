@@ -1,7 +1,6 @@
-main();
 async function main() {
-  const musicInfo = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/music_info.csv');
-  const soloLiveData = await loadCSV('https://raw.githubusercontent.com/meellx/adjust-points/main/solo_live_data.csv');
+  const musicInfo = await loadCSV('https://raw.githubusercontent.com/lvl331/adjust-points/main/music_info.csv');
+  const soloLiveData = await loadCSV('https://raw.githubusercontent.com/lvl331/adjust-points/main/solo_live_data.csv');
 
   const targetEventPoints = getNumberById('target-event-points');
   const currentEventPoints = getNumberById('current-event-points');
@@ -181,13 +180,13 @@ function validateInputs(targetEventPoints, currentEventPoints, teamData) {
   }
 
   // talent が50000以上1000000以下かチェック
-  if (isNaN(teamData.talent) || teamData.talent < 50000 || teamData.talent > 1000000) {
-    errors.push("総合力は50,000～1,000,000の数値を入力してください。");
+  if (isNaN(teamData.talent) || teamData.talent < 50000 || teamData.talent > 500000) {
+    errors.push("総合力は50,000～500,000の数値を入力してください。");
   }
 
   // eventBonus が0以上1000以下かチェック
-  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 1000) {
-    errors.push("イベントボーナスは0～1000の数値を入力してください。");
+  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 900) {
+    errors.push("イベントボーナスは0～900の数値を入力してください。");
   }
 
   if (errors.length > 0) {
@@ -228,8 +227,8 @@ function displayMatchResult({
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>調整可能な楽曲が見つかりました！</strong><br><br>
     ▼ポイント確認<br>
-    目標のイベントP：${targetPoints} P<br>
-    現在のイベントP：${currentPoints} P<br>
+    目標のイベントP：${targetPoints.toLocaleString()} P<br>
+    現在のイベントP：${currentPoints.toLocaleString()} P<br>
     <br>
     ▼ポイント調整<br>
     楽曲：${song.title} (${song.difficultyName.toUpperCase()})<br>
@@ -261,8 +260,8 @@ function displayHitorinboEnvyResult({
   let resultContent = `
     ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
     ▼ポイント確認<br>
-    目標のイベントP：${targetPoints} P<br>
-    現在のイベントP：${currentPoints} P<br>
+    目標のイベントP：${targetPoints.toLocaleString()} P<br>
+    現在のイベントP：${currentPoints.toLocaleString()} P<br>
     <br>
     ▼ポイント調整<br>
     楽曲：${data.title} (${data.difficultyName.toUpperCase()})<br>
