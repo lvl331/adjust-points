@@ -210,7 +210,7 @@ function displayNoAdjustableResults(message) {
 function displayNoMatchResult(minEventBonus, maxEventBonus) {
   document.getElementById("results-content").innerHTML = `
       ポイント調整可能な楽曲が見つかりませんでした。<br>
-      イベントボーナスが<strong>${(minEventBonus)}% ～ ${(maxEventBonus)}%</strong>の間になるように編成を変更して再度お試しください！<br>
+      イベントボーナスが${(minEventBonus)}% ～ ${(maxEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
       ※${(minEventBonus)}% ～ ${(maxEventBonus)}%の間でも該当する楽曲が存在しない場合があります
   `;
   document.getElementById("apply-result-button").style.display = "none";
