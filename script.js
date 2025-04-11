@@ -346,6 +346,7 @@ function findValidHitorinboEnvyData({
 
 function calculateMaxAllowedEventBonus(remainingEventPoints){
   maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 6.5);
+  if (maxAllowedEventBonus > 900) {maxAllowedEventBonus = 900};
  return maxAllowedEventBonus;
 }
 
