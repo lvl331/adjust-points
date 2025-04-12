@@ -279,7 +279,7 @@ if (minAllowedEventBonus !== -99999) {
   resultContent += `
     <br>
     <br>
-    <strong>▼備考</strong><br>
+    ▼備考<br>
     獲得ポイントを${(targetPoints - currentPoints).toLocaleString()} Pちょうどにしたい場合は
     イベントボーナスが${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
     ※${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
