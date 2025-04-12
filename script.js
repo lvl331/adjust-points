@@ -226,18 +226,18 @@ function displayMatchResult({
 }) {
   document.getElementById("results-content").innerHTML = `
     ✅ <strong>調整可能な楽曲が見つかりました！</strong><br><br>
-    ▼ポイント確認<br>
+    <strong>▼ポイント確認</strong><br>
     目標のイベントP：${targetPoints.toLocaleString()} P<br>
     現在のイベントP：${currentPoints.toLocaleString()} P<br>
     <br>
-    ▼ポイント調整<br>
+    ▼<strong>ポイント調整</strong><br>
     楽曲：${song.title} (${song.difficultyName.toUpperCase()})<br>
     スコア：${song.requiredScore.toLocaleString()} ～ ${(song.requiredScore + 19999).toLocaleString()}<br>
     ライボ消費数：${song.requiredLiveBonusUsed}<br>
     イベントボーナス：${eventBonus} %<br>
     獲得イベントP：${earnedPoints.toLocaleString()} P<br>
     <br>
-    ▼ポイント獲得後<br>
+    ▼<strong>ポイント獲得後</strong><br>
     累計イベントP：${totalPoints.toLocaleString()} P<br>
     目標までのイベントP：${remainingPoints.toLocaleString()} P
   `;
@@ -259,18 +259,18 @@ function displayHitorinboEnvyResult({
 
   let resultContent = `
     ✅ <strong>独りんぼエンヴィーで目標のイベントPに近づけましょう！</strong><br><br>
-    ▼ポイント確認<br>
+    <strong>▼ポイント確認</strong><br>
     目標のイベントP：${targetPoints.toLocaleString()} P<br>
     現在のイベントP：${currentPoints.toLocaleString()} P<br>
     <br>
-    ▼ポイント調整<br>
+    <strong>▼ポイント調整</strong><br>
     楽曲：${data.title} (${data.difficultyName.toUpperCase()})<br>
     スコア：${Math.floor(data.requiredScore).toLocaleString()} ～ ${Math.floor(data.requiredScore + 19999).toLocaleString()}<br>
     ライボ消費数：${data.requiredLiveBonusUsed}<br>
     イベントボーナス：${eventBonus} %<br>
     獲得イベントP：${earnedPoints.toLocaleString()} P<br>
     <br>
-    ▼ポイント獲得後<br>
+    <strong>▼ポイント獲得後</strong><br>
     累計イベントP：${totalPoints.toLocaleString()} P<br>
     目標までのイベントP：${remainingPoints.toLocaleString()} P
   `;
@@ -279,7 +279,7 @@ if (minAllowedEventBonus !== -99999) {
   resultContent += `
     <br>
     <br>
-    ▼備考<br>
+    <strong>▼備考</strong><br>
     獲得ポイントを${(targetPoints - currentPoints).toLocaleString()} Pちょうどにしたい場合は
     イベントボーナスが${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間になるように編成を変更して再度お試しください！<br>
     ※${(minAllowedEventBonus)}%～${(maxAllowedEventBonus)}%の間でも該当する楽曲が存在しない場合があります。
