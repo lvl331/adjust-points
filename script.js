@@ -184,9 +184,9 @@ function validateInputs(targetEventPoints, currentEventPoints, teamData) {
     errors.push("総合力は50,000～500,000の数値を入力してください。");
   }
 
-  // eventBonus が0以上1000以下かチェック
-  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 900) {
-    errors.push("イベントボーナスは0～900の数値を入力してください。");
+  // eventBonus が0以上1500以下かチェック
+  if (isNaN(teamData.eventBonus) || teamData.eventBonus < 0 || teamData.eventBonus > 1500) {
+    errors.push("イベントボーナスは0～1500の数値を入力してください。");
   }
 
   if (errors.length > 0) {
@@ -345,8 +345,8 @@ function findValidHitorinboEnvyData({
 }
 
 function calculateMaxAllowedEventBonus(remainingEventPoints){
-  maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 6.5);
-  if (maxAllowedEventBonus > 900) {maxAllowedEventBonus = 900};
+  let maxAllowedEventBonus = remainingEventPoints - 100 - Math.floor(remainingEventPoints / 6.5);
+  if (maxAllowedEventBonus > 1500) {maxAllowedEventBonus = 1500};
  return maxAllowedEventBonus;
 }
 
@@ -373,7 +373,7 @@ function calculateMinAllowedEventBonus({
 
   const songConst = getSongDataByTitle("メルト", musicInfo).songConst;
 
-  for (let eventBonus = 0; eventBonus <= 800; eventBonus++) {
+  for (let eventBonus = 0; eventBonus <= 1500; eventBonus++) {
     const points = calculateEventPoints({
       totalScore: meltExpertScore.min * scoreBufferMultiplier,
       eventBonus,
